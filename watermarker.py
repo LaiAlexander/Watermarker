@@ -21,21 +21,7 @@ overlay_x_pos = start_width - overlay_new_width
 overlay_y_pos = start_height - overlay_new_height
 new_image.paste(resized_overlay, (overlay_x_pos, overlay_y_pos), resized_overlay)
 
-print(overlay_width)
-print(overlay_height)
-print(factor)
-
-print(start_width)
-print(start_height)
-
-print(start_image.size)
-print(start_image.filename)
-print(start_image.format)
-print(start_image.format_description)
-
 extension = start_image.filename.split(".")[-1]
-
-print(extension)
 
 new_image.save("newimage." + extension)
 # may also do this, might be better:
