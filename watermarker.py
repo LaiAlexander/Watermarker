@@ -36,7 +36,9 @@ def pos_overlay(start, overlay):
     }
     return position
 
-new_img.paste(new_overlay, pos_overlay(new_img, new_overlay)['bottom right'], new_overlay)
+position = input("In which corner? ")
+
+new_img.paste(new_overlay, pos_overlay(new_img, new_overlay).get(position, (0, 0)), new_overlay)
 
 extension = start_img.filename.split(".")[-1]
 
