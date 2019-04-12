@@ -36,15 +36,18 @@ def watermark(overlay_img, pos_text, single):
         position = position.get(pos_text) or position['bottom right']
 
         new_img.paste(new_overlay, position, new_overlay)
+        print("Image is watermarked...", flush=True)
 
         extension = start_img.filename.split(".")[-1]
 
         new_img.save("image_watermarked." + extension)
+        print("Image is saved...", flush=True)
         return
     elif not single:
-        path = "\\bulk"
-        complete_path = os.getcwd() + path
-        os.chdir(complete_path)
+        path = "bulk"
+        # complete_path = os.getcwd() + path
+        os.chdir(path)
+        save_path = "watermarked"
         for filename in os.listdir(os.getcwd()):
             if os.path.isfile(filename):
                 start_img = Image.open(filename)
@@ -60,15 +63,15 @@ def watermark(overlay_img, pos_text, single):
 
                 extension = start_img.filename.split(".")[-1]
 
-                dir_name = "watermarked"
                 try:
-                    (os.mkdir(dir_name))
+                    (os.mkdir(save_path))
                     print("Created directory...", flush=True)
                 except FileExistsError:
                     print("Directory already exists...", flush=True)
-                os.chdir(dir_name)
+                os.chdir(save_path)
                 new_img.save(filename + "_watermarked." + extension)
-                os.chdir(complete_path)
+                print("Image is watermarked and saved...", flush=True)
+                os.chdir(os.pardir)
         return
 
 def run():
