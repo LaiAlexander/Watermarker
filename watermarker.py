@@ -1,3 +1,6 @@
+"""
+A script for watermarking pictures in bulk.
+"""
 #! python3
 
 import os
@@ -42,6 +45,7 @@ def watermark(overlay_img, pos_text, single):
 
         new_img.save("image_watermarked." + extension)
         print("Image is saved...", flush=True)
+        print("Done!")
         return
     elif not single:
         path = "bulk"
@@ -51,7 +55,8 @@ def watermark(overlay_img, pos_text, single):
         for filename in os.listdir(os.getcwd()):
             if os.path.isfile(filename):
                 start_img = Image.open(filename)
-                new_overlay = overlay_img.resize(new_overlay_size(start_img, overlay_img), Image.ANTIALIAS)
+                new_overlay = overlay_img.resize(new_overlay_size(start_img, overlay_img),
+                                                 Image.ANTIALIAS)
 
                 new_img = start_img.copy()
 
@@ -72,6 +77,7 @@ def watermark(overlay_img, pos_text, single):
                 new_img.save(filename + "_watermarked." + extension)
                 print("Image is watermarked and saved...", flush=True)
                 os.chdir(os.pardir)
+        print("Done!", flush=True)
         return
 
 def run():
