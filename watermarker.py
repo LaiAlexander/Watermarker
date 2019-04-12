@@ -12,11 +12,6 @@ def new_overlay_size(start, overlay):
     overlay_new_height = int(overlay.size[1] * factor)
     return (overlay_new_width, overlay_new_height)
 
-def get_bottom_right_pos(start, overlay):
-    overlay_x_pos = start.size[0] - overlay.size[0]
-    overlay_y_pos = start.size[1] - overlay.size[1]
-    return (overlay_x_pos, overlay_y_pos)
-
 def pos_overlay(start, overlay):
     position = {
         'top left': (0, 0),
