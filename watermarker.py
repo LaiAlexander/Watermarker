@@ -30,42 +30,39 @@ def watermark(overlay_img, pos_text, path):
     # complete_path = os.getcwd() + path
     os.chdir(path)
     save_path = "watermarked"
+    try:
+        (os.mkdir(save_path))
+        print("Created directory '" + save_path + "'...", flush=True)
+    except FileExistsError:
+        print("Directory '" + save_path + "' already exists...", flush=True)
     for filename in os.listdir(os.getcwd()):
         if os.path.isfile(filename):
             try:
-                start_img = Image.open(filename)
+                img = Image.open(filename)
             except OSError:
-                # black magic from https://stackoverflow.com/a/39675059
-                os.system('') #enable VT100 Escape Sequence for WINDOWS 10
                 print("Could not open \033[31m" +  filename + "\033[0m...", flush=True)
                 print("Are you sure it is an image file?", flush=True)
                 continue
-            new_overlay = overlay_img.resize(new_overlay_size(start_img, overlay_img),
-                                             Image.ANTIALIAS)
+            overlay = overlay_img.resize(new_overlay_size(img, overlay_img), Image.ANTIALIAS)
 
-            new_img = start_img.copy()
-
-            position = pos_overlay(new_img, new_overlay)
+            position = pos_overlay(img, overlay)
 
             position = position.get(pos_text) or position['bottom right']
 
-            new_img.paste(new_overlay, position, new_overlay)
+            img.paste(overlay, position, overlay)
 
-            extension = start_img.filename.split(".")[-1]
+            extension = img.filename.split(".")[-1]
 
-            try:
-                (os.mkdir(save_path))
-                print("Created directory...", flush=True)
-            except FileExistsError:
-                print("Directory already exists...", flush=True)
             os.chdir(save_path)
-            new_img.save(filename + "_watermarked." + extension)
+            img.save(filename + "_watermarked." + extension)
             print("Image is watermarked and saved...", flush=True)
             os.chdir(os.pardir)
-    print("Done!", flush=True)
+    print("\033[32mDone!\033[0m", flush=True)
     return
 
 def run():
+    # black magic from https://stackoverflow.com/a/39675059
+    os.system('') # enable VT100/ANSI Escape Sequence for WINDOWS 10
     path = "images"
     if not os.path.exists(path):
         print("Folder named 'images' does not exist.")
