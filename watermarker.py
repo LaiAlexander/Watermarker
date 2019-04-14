@@ -1,10 +1,9 @@
 """
 A script for watermarking pictures in bulk.
-TODO: 
-    Support for choosing size/ratio?
-    Error message if logo.png doesn't exist
-    If logo doesn't exist in black/white, display error or use color
-        May convert logo to black/white
+TODO Support for choosing size/ratio?
+TODO Error message if logo.png doesn't exist
+TODO If logo doesn't exist in black/white, display error or use color
+TODO May convert logo to black/white
 """
 #! python3
 
@@ -13,6 +12,8 @@ from PIL import Image
 
 def new_overlay_size(start, overlay):
     overlay_new_width = int(start.size[0] / 5)
+    # Why not just this instead of bothering with factor?
+    # overlay_new_width = int(start.size[1] / 5)
     factor = overlay_new_width / overlay.size[0]
     overlay_new_height = int(overlay.size[1] * factor)
     return (overlay_new_width, overlay_new_height)
@@ -54,6 +55,7 @@ def watermark(overlay_img, pos_text, path):
             extension = img.filename.split(".")[-1]
 
             os.chdir(save_path)
+            filename = filename.split(".")[0]
             img.save(filename + "_watermarked." + extension)
             print("Image is watermarked and saved...", flush=True)
             os.chdir(os.pardir)
