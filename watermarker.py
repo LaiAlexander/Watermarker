@@ -52,7 +52,6 @@ def watermark_all(overlay_img, position, path):
                 continue
 
             watermark(img, overlay_img, position)
-            os.chdir(save_path)
 
             # Can do this in one operation instead, see below
             # filename = filename.split(".")[0]
@@ -60,7 +59,10 @@ def watermark_all(overlay_img, position, path):
             filename, extension = filename.split(".")
             # May use the following, however extension will contain a period ( . )
             # filename, extension = os.path.splitext(filename)
+            # The following also works, then the string is ready, no need to add on extension
+            # filename = filename[:filename.find(".")] + "_watermarked" + filename[filename.find("."):]
 
+            os.chdir(save_path)
             img.save(filename + "_watermarked." + extension)
             print("Image is watermarked and saved...", flush=True)
             os.chdir(os.pardir)
