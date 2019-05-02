@@ -11,11 +11,11 @@ import os
 from PIL import Image
 
 def new_overlay_size(start, overlay):
-    overlay_new_width = int(start.size[0] / 5)
-    # Why not just this instead of bothering with factor?
-    # overlay_new_width = int(start.size[1] / 5)
-    factor = overlay_new_width / overlay.size[0]
-    overlay_new_height = int(overlay.size[1] * factor)
+    factor = 5 if start.size[0] > start.size[1] else 3.75
+    overlay_new_width = int(start.size[0] / factor)
+    # Need to calculate ratio to maintain proper aspect ratio of the logo
+    ratio = overlay_new_width / overlay.size[0]
+    overlay_new_height = int(overlay.size[1] * ratio)
     return (overlay_new_width, overlay_new_height)
 
 def pos_overlay(start, overlay):
@@ -27,7 +27,13 @@ def pos_overlay(start, overlay):
     }
     return position
 
-def watermark(overlay_img, pos_text, path):
+def watermark(img, overlay_img, position):
+    overlay = overlay_img.resize(new_overlay_size(img, overlay_img), Image.ANTIALIAS)
+    coords = pos_overlay(img, overlay)
+    coords = coords.get(position) or coords['bottom right']
+    img.paste(overlay, coords, overlay)
+
+def watermark_all(overlay_img, position, path):
     # complete_path = os.getcwd() + path
     os.chdir(path)
     save_path = "watermarked"
@@ -44,14 +50,8 @@ def watermark(overlay_img, pos_text, path):
                 print("Could not open \033[31m" +  filename + "\033[0m...", flush=True)
                 print("Are you sure it is an image file?", flush=True)
                 continue
-            overlay = overlay_img.resize(new_overlay_size(img, overlay_img), Image.ANTIALIAS)
 
-            position = pos_overlay(img, overlay)
-
-            position = position.get(pos_text) or position['bottom right']
-
-            img.paste(overlay, position, overlay)
-
+            watermark(img, overlay_img, position)
             extension = img.filename.split(".")[-1]
 
             os.chdir(save_path)
@@ -79,8 +79,8 @@ def run():
         overlay_img = Image.open("logo.png")
     else:
         overlay_img = Image.open("logo.png")
-    pos_text = input("In which corner? ")
-    watermark(overlay_img, pos_text, path)
+    position = input("In which corner? ")
+    watermark_all(overlay_img, position, path)
     # may also do this, might be better:
     # new_image.save("newimage." + start_image.format)
 
