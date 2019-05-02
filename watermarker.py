@@ -52,10 +52,15 @@ def watermark_all(overlay_img, position, path):
                 continue
 
             watermark(img, overlay_img, position)
-            extension = img.filename.split(".")[-1]
-
             os.chdir(save_path)
-            filename = filename.split(".")[0]
+
+            # Can do this in one operation instead, see below
+            # filename = filename.split(".")[0]
+            # extension = img.filename.split(".")[-1]
+            filename, extension = filename.split(".")
+            # May use the following, however extension will contain a period ( . )
+            # filename, extension = os.path.splitext(filename)
+
             img.save(filename + "_watermarked." + extension)
             print("Image is watermarked and saved...", flush=True)
             os.chdir(os.pardir)
