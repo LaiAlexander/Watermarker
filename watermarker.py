@@ -63,7 +63,7 @@ def watermark_all(overlay_img, position, path):
             # filename = filename[:filename.find(".")] + "_watermarked" + filename[filename.find("."):]
 
             os.chdir(save_path)
-            img.save(filename + "_watermarked." + extension)
+            img.save(filename + "_watermarked." + extension, quality=95)
             print("Image is watermarked and saved...", flush=True)
             os.chdir(os.pardir)
     print("\033[32mDone!\033[0m", flush=True)
