@@ -10,11 +10,15 @@ TODO May convert logo to black/white
 import os
 from PIL import Image
 
-def new_overlay_size(base_img, overlay):
+def calculate_ratio(base_img, overlay):
     factor = 5 if base_img.size[0] > base_img.size[1] else 3.75
     overlay_new_width = int(base_img.size[0] / factor)
     # Need to calculate ratio to maintain proper aspect ratio of the logo
     ratio = overlay_new_width / overlay.size[0]
+    return ratio
+
+def new_overlay_size(overlay, ratio):
+    overlay_new_width = int(overlay.size[0] * ratio)
     overlay_new_height = int(overlay.size[1] * ratio)
     return (overlay_new_width, overlay_new_height)
 
@@ -27,13 +31,33 @@ def pos_overlay(base_img, overlay):
     }
     return position
 
-def watermark(img, overlay_img, position):
-    overlay = overlay_img.resize(new_overlay_size(img, overlay_img), Image.ANTIALIAS)
+def watermark(img, overlay_img, position, white_bg):
+    if white_bg:
+        os.chdir(os.pardir)
+        bg = Image.open("img\\bg.png")
+        os.chdir("images")
+        ratio = calculate_ratio(img, bg)
+
+        # Need to rotate or flip the white background depending on where the logo should be
+        white_overlay = bg.resize(new_overlay_size(bg, ratio), Image.ANTIALIAS)
+        if position == "top left":
+            white_overlay = white_overlay.transpose(Image.ROTATE_180)
+        elif position == "top right":
+            white_overlay = white_overlay.transpose(Image.FLIP_TOP_BOTTOM)
+        elif position == "bottom left":
+            white_overlay = white_overlay.transpose(Image.FLIP_LEFT_RIGHT)
+
+        coords = pos_overlay(img, white_overlay)
+        coords = coords.get(position) or coords['bottom right']
+        img.paste(white_overlay, coords, white_overlay)
+    else:
+        ratio = calculate_ratio(img, overlay_img)
+    overlay = overlay_img.resize(new_overlay_size(overlay_img, ratio), Image.ANTIALIAS)
     coords = pos_overlay(img, overlay)
     coords = coords.get(position) or coords['bottom right']
     img.paste(overlay, coords, overlay)
 
-def watermark_all(overlay_img, position, path):
+def watermark_all(overlay_img, position, path, white_bg):
     # complete_path = os.getcwd() + path
     os.chdir(path)
     save_path = "watermarked"
@@ -51,7 +75,7 @@ def watermark_all(overlay_img, position, path):
                 print("Are you sure it is an image file?", flush=True)
                 continue
 
-            watermark(img, overlay_img, position)
+            watermark(img, overlay_img, position, white_bg)
 
             # Can do this in one operation instead, see below
             # filename = filename.split(".")[0]
@@ -87,7 +111,10 @@ def run():
     else:
         overlay_img = Image.open("logo.png")
     position = input("In which corner? ")
-    watermark_all(overlay_img, position, path)
+    white_bg = input("White background behind logo? (Y/N) ")
+    white_bg = white_bg.upper()
+    white_bg = False if white_bg == "N" else True # Default is white background
+    watermark_all(overlay_img, position, path, white_bg)
     # may also do this, might be better:
     # new_image.save("newimage." + start_image.format)
 
