@@ -10,20 +10,20 @@ TODO May convert logo to black/white
 import os
 from PIL import Image
 
-def new_overlay_size(start, overlay):
-    factor = 5 if start.size[0] > start.size[1] else 3.75
-    overlay_new_width = int(start.size[0] / factor)
+def new_overlay_size(base_img, overlay):
+    factor = 5 if base_img.size[0] > base_img.size[1] else 3.75
+    overlay_new_width = int(base_img.size[0] / factor)
     # Need to calculate ratio to maintain proper aspect ratio of the logo
     ratio = overlay_new_width / overlay.size[0]
     overlay_new_height = int(overlay.size[1] * ratio)
     return (overlay_new_width, overlay_new_height)
 
-def pos_overlay(start, overlay):
+def pos_overlay(base_img, overlay):
     position = {
         'top left': (0, 0),
-        'top right': (start.size[0] - overlay.size[0], 0),
-        'bottom left': (0, start.size[1] - overlay.size[1]),
-        'bottom right': (start.size[0] - overlay.size[0], start.size[1] - overlay.size[1])
+        'top right': (base_img.size[0] - overlay.size[0], 0),
+        'bottom left': (0, base_img.size[1] - overlay.size[1]),
+        'bottom right': (base_img.size[0] - overlay.size[0], base_img.size[1] - overlay.size[1])
     }
     return position
 
