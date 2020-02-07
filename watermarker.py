@@ -34,7 +34,7 @@ def pos_overlay(base_img, overlay):
 def watermark(img, overlay_img, position, white_bg):
     if white_bg:
         os.chdir(os.pardir)
-        bg = Image.open("img\\bg.png")
+        bg = Image.open("img" + os.sep + "bg.png")
         os.chdir("images")
         ratio = calculate_ratio(img, bg)
 
