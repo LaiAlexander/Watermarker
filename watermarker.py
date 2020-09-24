@@ -8,7 +8,10 @@ TODO May convert logo to black/white
 #! python3
 
 import os
-from PIL import Image
+from PIL import Image, ImageFile
+
+# Make sure big images also load
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def calculate_ratio(base_img, overlay):
     factor = 5 if base_img.size[0] > base_img.size[1] else 3.75
